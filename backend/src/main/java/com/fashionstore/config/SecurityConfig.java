@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configurers.HeadersCon
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -35,11 +36,14 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
+                // Explicitly allow all HTTP methods for OPTIONS (CORS preflight)
+                .requestMatchers(new AntPathRequestMatcher("/api/auth/**", "POST")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/api/auth/**", "GET")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/api/auth/**", "OPTIONS")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/uploads/**")).permitAll()
+                // Public read-only endpoints
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/h2-console/**").permitAll()
-                .requestMatchers("/uploads/**").permitAll()
-                // Public read-only endpoints — ant patterns work reliably without MVC dispatcher
                 .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/products").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
