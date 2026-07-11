@@ -74,3 +74,6 @@ INSERT INTO product_sizes (product_id, size) VALUES
 (7, 'O/S'),
 (8, 'O/S');
 
+-- Restart the auto-increment sequence for users to avoid primary key conflict on H2 database
+ALTER TABLE users ALTER COLUMN id RESTART WITH 7;
+
