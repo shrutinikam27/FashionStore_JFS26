@@ -22,6 +22,9 @@ public class EmailService {
     @Value("${spring.mail.username:info@fashionstore.com}")
     private String fromEmail;
 
+    @Value("${resend.api.key:}")
+    private String resendApiKey;
+
     public EmailService(@Autowired(required = false) JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }
@@ -31,6 +34,11 @@ public class EmailService {
     }
 
     public void sendEmail(String to, String subject, String body) {
+        if (resendApiKey != null && !resendApiKey.trim().isEmpty()) {
+            sendEmailViaResend(to, subject, body, null, null);
+            return;
+        }
+
         if (mailSender == null) {
             printMockEmail(to, subject, body);
             return;
@@ -54,6 +62,11 @@ public class EmailService {
     }
 
     public void sendEmailWithAttachment(String to, String subject, String body, byte[] attachmentBytes, String attachmentName) {
+        if (resendApiKey != null && !resendApiKey.trim().isEmpty()) {
+            sendEmailViaResend(to, subject, body, attachmentBytes, attachmentName);
+            return;
+        }
+
         if (mailSender == null) {
             printMockEmail(to, subject, body + "\n[Attachment: " + attachmentName + " (" + attachmentBytes.length + " bytes)]");
             return;
@@ -90,5 +103,39 @@ public class EmailService {
         System.out.println("Content:");
         System.out.println(body);
         System.out.println("==================================================");
+    }
+
+    private void sendEmailViaResend(String to, String subject, String body, byte[] attachmentBytes, String attachmentName) {
+        try {
+            org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate();
+            org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
+            headers.setContentType(org.springframework.http.MediaType.APPLICATION_JSON);
+            headers.set("Authorization", "Bearer " + resendApiKey);
+
+            java.util.Map<String, Object> payload = new java.util.HashMap<>();
+            payload.put("from", "Fashion Store <onboarding@resend.dev>");
+            payload.put("to", java.util.List.of(to));
+            payload.put("subject", subject);
+            
+            String htmlContent = "<h3>Fashion Store Notification</h3><p>" + body.replace("\n", "<br/>") + "</p>";
+            payload.put("html", htmlContent);
+
+            if (attachmentBytes != null && attachmentName != null) {
+                String base64Content = java.util.Base64.getEncoder().encodeToString(attachmentBytes);
+                java.util.Map<String, String> attachment = new java.util.HashMap<>();
+                attachment.put("filename", attachmentName);
+                attachment.put("content", base64Content);
+                payload.put("attachments", java.util.List.of(attachment));
+            }
+
+            org.springframework.http.HttpEntity<java.util.Map<String, Object>> entity = new org.springframework.http.HttpEntity<>(payload, headers);
+            org.springframework.http.ResponseEntity<String> response = restTemplate.postForEntity("https://api.resend.com/emails", entity, String.class);
+            
+            System.out.println(">>> SUCCESS: Email sent via Resend HTTP API. Status: " + response.getStatusCode());
+        } catch (Exception e) {
+            System.err.println(">>> ERROR: Failed to send email via Resend API. Reason: " + e.getMessage());
+            e.printStackTrace();
+            printMockEmail(to, subject, body);
+        }
     }
 }
