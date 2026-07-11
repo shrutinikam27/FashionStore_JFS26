@@ -1,6 +1,7 @@
 package com.fashionstore.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,9 @@ public class EmailService {
     private final JavaMailSender mailSender;
     private final List<MockEmail> mockEmails = Collections.synchronizedList(new ArrayList<>());
 
+    @Value("${spring.mail.username:info@fashionstore.com}")
+    private String fromEmail;
+
     public EmailService(@Autowired(required = false) JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }
@@ -34,7 +38,8 @@ public class EmailService {
 
         try {
             SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom("Fashion Store <info@fashionstore.com>");
+            String from = (fromEmail != null && !fromEmail.contains("YOUR_GMAIL")) ? fromEmail : "info@fashionstore.com";
+            message.setFrom("Fashion Store <" + from + ">");
             message.setTo(to);
             message.setSubject(subject);
             message.setText(body);
@@ -57,7 +62,8 @@ public class EmailService {
         try {
             jakarta.mail.internet.MimeMessage message = mailSender.createMimeMessage();
             org.springframework.mail.javamail.MimeMessageHelper helper = new org.springframework.mail.javamail.MimeMessageHelper(message, true);
-            helper.setFrom("info@fashionstore.com", "Fashion Store");
+            String from = (fromEmail != null && !fromEmail.contains("YOUR_GMAIL")) ? fromEmail : "info@fashionstore.com";
+            helper.setFrom(from, "Fashion Store");
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(body);
