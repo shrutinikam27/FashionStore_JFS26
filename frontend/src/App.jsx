@@ -142,7 +142,7 @@ const MainLayout = () => {
       </main>
       <Footer />
       <ToastAlert />
-      {import.meta.env.DEV && <DevInbox />}
+      <DevInbox />
     </div>
   );
 };
