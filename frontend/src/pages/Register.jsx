@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth, API_URL } from '../context/AuthContext';
 import { GoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 
@@ -50,7 +50,7 @@ const Register = () => {
       const decoded = decodeJwt(credentialResponse.credential);
       if (!decoded || !decoded.email) throw new Error('Failed to decode Google credentials');
 
-      const backendRes = await axios.post('http://localhost:8080/api/auth/google', {
+      const backendRes = await axios.post(`${API_URL}/auth/google`, {
         email: decoded.email,
         firstName: decoded.given_name || decoded.name || 'Google',
         lastName: decoded.family_name || 'User',
