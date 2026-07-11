@@ -21,7 +21,7 @@ INSERT INTO users (id, email, password, first_name, last_name, phone, role, enab
 (2, 'customer@fashionstore.com', '$2a$10$qh/ask6/.1DMZNAl6.lpRe4kqqKTBLPe079iK4jMmpv4fPFx5muvG', 'John', 'Doe', '+1987654321', 'CUSTOMER', true, NULL),
 (3, 'jane.smith@fashionstore.com', '$2a$10$qh/ask6/.1DMZNAl6.lpRe4kqqKTBLPe079iK4jMmpv4fPFx5muvG', 'Jane', 'Smith', '+1555555555', 'CUSTOMER', true, NULL),
 (4, 'agency1@fashionstore.com', '$2a$10$qh/ask6/.1DMZNAl6.lpRe4kqqKTBLPe079iK4jMmpv4fPFx5muvG', 'Express', 'Agency', '+1777777777', 'AGENCY', true, NULL),
-(5, 'nikamshruti27@gmail.com', '$2a$10$qh/ask6/.1DMZNAl6.lpRe4kqqKTBLPe079iK4jMmpv4fPFx5muvG', 'Delivery1', 'Person', '+1555555555', 'DELIVERY_PERSON', true, 4),
+(5, 'nikamshruti27@gmail.com', '$2a$10$qh/ask6/.1DMZNAl6.lpRe4kqqKTBLPe079iK4jMmpv4fPFx5muvG', 'Shruti', 'Nikam', '+1555555555', 'DELIVERY_PERSON', true, 4),
 (6, 'delivery@fashionstore.com', '$2a$10$qh/ask6/.1DMZNAl6.lpRe4kqqKTBLPe079iK4jMmpv4fPFx5muvG', 'Delivery', 'Person', '+1000000000', 'DELIVERY_PERSON', true, 4);
 
 -- Insert Addresses
