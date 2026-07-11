@@ -26,7 +26,7 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
 
-    @Value("${app.cors.allowed-origins:http://localhost:5173,http://127.0.0.1:5173,https://fashion-store-jfs-26.vercel.app,https://fashion-store-jfs26.vercel.app}")
+    @Value("${app.cors.allowed-origins:http://localhost:5173,http://127.0.0.1:5173,https://fashion-store-jfs-26.vercel.app,https://fashion-store-jfs26.vercel.app,https://fashionstore-jfs26.vercel.app,https://fashionstore-jfs-26.vercel.app}")
     private List<String> allowedOrigins;
 
     public SecurityConfig(JwtAuthenticationFilter jwtAuthFilter, AuthenticationProvider authenticationProvider) {
