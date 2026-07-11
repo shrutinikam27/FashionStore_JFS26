@@ -41,6 +41,7 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
                 // Explicitly allow all HTTP methods for OPTIONS (CORS preflight)
+                .requestMatchers(new AntPathRequestMatcher("/")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/api/auth/**", "POST")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/api/auth/**", "GET")).permitAll()
                 .requestMatchers(new AntPathRequestMatcher("/api/auth/**", "OPTIONS")).permitAll()
