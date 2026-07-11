@@ -1,0 +1,23 @@
+# Java / Maven ignore rules
+backend/target/
+backend/.mvn/
+backend/*.jar
+backend/*.war
+backend/*.ear
+backend/*.class
+
+# Node / Frontend ignore rules
+frontend/node_modules/
+frontend/dist/
+frontend/.env*
+
+# IDEs and Editors
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+Thumbs.db
