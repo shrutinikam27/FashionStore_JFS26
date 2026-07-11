@@ -40,13 +40,11 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
-                // Explicitly allow all HTTP methods for OPTIONS (CORS preflight)
-                .requestMatchers(new AntPathRequestMatcher("/")).permitAll()
-                .requestMatchers(new AntPathRequestMatcher("/api/auth/**", "POST")).permitAll()
-                .requestMatchers(new AntPathRequestMatcher("/api/auth/**", "GET")).permitAll()
-                .requestMatchers(new AntPathRequestMatcher("/api/auth/**", "OPTIONS")).permitAll()
-                .requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll()
-                .requestMatchers(new AntPathRequestMatcher("/uploads/**")).permitAll()
+                .requestMatchers("/").permitAll()
+                .requestMatchers("/error").permitAll()
+                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/h2-console/**").permitAll()
+                .requestMatchers("/uploads/**").permitAll()
                 // Public read-only endpoints
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
