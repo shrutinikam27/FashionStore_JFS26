@@ -7,7 +7,7 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import App from './App.jsx'
 import './index.css'
 
-const GOOGLE_CLIENT_ID = '345255052642-ou8njf55990a5thlc37u50e7jl1sa6gi.apps.googleusercontent.com'
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '345255052642-ou8njf55990a5thlc37u50e7jl1sa6gi.apps.googleusercontent.com'
 
 createRoot(document.getElementById('root')).render(
   <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
