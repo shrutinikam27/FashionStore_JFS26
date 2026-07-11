@@ -1,6 +1,5 @@
 # Java / Maven ignore rules
 backend/target/
-backend/.mvn/
 backend/*.jar
 backend/*.war
 backend/*.ear
