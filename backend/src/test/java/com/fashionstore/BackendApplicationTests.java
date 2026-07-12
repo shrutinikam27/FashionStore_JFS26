@@ -20,7 +20,7 @@ class BackendApplicationTests {
 		try {
 			emailService.sendEmail("nikamshruti27@gmail.com", "Test Email from Spring Boot", "Hello! This is a test email sent from the local Spring Boot application using your credentials.");
 			System.out.println(">>> EMAIL SEND TEST DISPATCHED (Waiting for async dispatch)...");
-			Thread.sleep(3000);
+			Thread.sleep(8000);
 			System.out.println(">>> EMAIL SEND TEST COMPLETED successfully (no exception thrown).");
 		} catch (Exception e) {
 			System.out.println(">>> EMAIL SEND TEST FAILED!");

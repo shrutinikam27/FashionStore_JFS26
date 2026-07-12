@@ -64,9 +64,4 @@ public class AuthController {
         AuthResponse response = authService.googleSsoAuthenticate(request);
         return ResponseEntity.ok(response);
     }
-
-    @GetMapping("/emails")
-    public ResponseEntity<List<EmailService.MockEmail>> getMockEmails() {
-        return ResponseEntity.ok(emailService.getMockEmails());
-    }
 }

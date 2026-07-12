@@ -6,7 +6,6 @@ import { CartProvider } from './context/CartContext';
 // Components & Layout
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import DevInbox from './components/DevInbox';
 
 // Public Pages
 import Home from './pages/Home';
@@ -142,7 +141,6 @@ const MainLayout = () => {
       </main>
       <Footer />
       <ToastAlert />
-      <DevInbox />
     </div>
   );
 };
