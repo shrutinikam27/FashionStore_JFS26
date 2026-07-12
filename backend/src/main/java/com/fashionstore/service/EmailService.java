@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -33,6 +34,7 @@ public class EmailService {
         return new ArrayList<>(mockEmails);
     }
 
+    @Async
     public void sendEmail(String to, String subject, String body) {
         if (resendApiKey != null && !resendApiKey.trim().isEmpty()) {
             sendEmailViaResend(to, subject, body, null, null);
@@ -46,7 +48,7 @@ public class EmailService {
 
         try {
             SimpleMailMessage message = new SimpleMailMessage();
-            String from = (fromEmail != null && !fromEmail.contains("YOUR_GMAIL")) ? fromEmail : "info@fashionstore.com";
+            String from = (fromEmail != null && !fromEmail.trim().isEmpty() && !fromEmail.contains("YOUR_GMAIL")) ? fromEmail : "info@fashionstore.com";
             message.setFrom("Fashion Store <" + from + ">");
             message.setTo(to);
             message.setSubject(subject);
@@ -61,6 +63,7 @@ public class EmailService {
         }
     }
 
+    @Async
     public void sendEmailWithAttachment(String to, String subject, String body, byte[] attachmentBytes, String attachmentName) {
         if (resendApiKey != null && !resendApiKey.trim().isEmpty()) {
             sendEmailViaResend(to, subject, body, attachmentBytes, attachmentName);
@@ -75,7 +78,7 @@ public class EmailService {
         try {
             jakarta.mail.internet.MimeMessage message = mailSender.createMimeMessage();
             org.springframework.mail.javamail.MimeMessageHelper helper = new org.springframework.mail.javamail.MimeMessageHelper(message, true);
-            String from = (fromEmail != null && !fromEmail.contains("YOUR_GMAIL")) ? fromEmail : "info@fashionstore.com";
+            String from = (fromEmail != null && !fromEmail.trim().isEmpty() && !fromEmail.contains("YOUR_GMAIL")) ? fromEmail : "info@fashionstore.com";
             helper.setFrom(from, "Fashion Store");
             helper.setTo(to);
             helper.setSubject(subject);
