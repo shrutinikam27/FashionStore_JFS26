@@ -31,7 +31,7 @@ public class EmailService {
         if (hasSmtp) {
             try {
                 SimpleMailMessage message = new SimpleMailMessage();
-                message.setFrom("Fashion Store <" + fromEmail + ">");
+                message.setFrom(fromEmail);
                 message.setTo(to);
                 message.setSubject(subject);
                 message.setText(body);
