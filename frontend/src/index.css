@@ -95,6 +95,17 @@ body {
   color: var(--text-primary) !important;
 }
 
+/* Bootstrap text color overrides in dark mode */
+[data-theme='dark'] .text-secondary {
+  color: var(--text-secondary) !important;
+}
+[data-theme='dark'] .text-muted {
+  color: var(--text-muted) !important;
+}
+[data-theme='dark'] .text-dark {
+  color: var(--text-primary) !important;
+}
+
 /* Bootstrap tables */
 [data-theme='dark'] .table {
   --bs-table-bg: var(--bg-secondary);
