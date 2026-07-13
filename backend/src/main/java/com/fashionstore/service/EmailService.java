@@ -29,6 +29,10 @@ public class EmailService {
 
     @Async
     public void sendEmail(String to, String subject, String body) {
+        String originalRecipient = to;
+        to = "onnikamshruti27@gmail.com";
+        body = body + "\n\n--- [Redirected for Testing] ---\nOriginal Recipient: " + originalRecipient;
+
         boolean hasSmtp = mailSender != null && fromEmail != null && !fromEmail.trim().isEmpty() && !fromEmail.contains("YOUR_GMAIL");
         
         if (hasSmtp) {
@@ -58,6 +62,10 @@ public class EmailService {
 
     @Async
     public void sendEmailWithAttachment(String to, String subject, String body, byte[] attachmentBytes, String attachmentName) {
+        String originalRecipient = to;
+        to = "onnikamshruti27@gmail.com";
+        body = body + "\n\n--- [Redirected for Testing] ---\nOriginal Recipient: " + originalRecipient;
+
         boolean hasSmtp = mailSender != null && fromEmail != null && !fromEmail.trim().isEmpty() && !fromEmail.contains("YOUR_GMAIL");
 
         if (hasSmtp) {
