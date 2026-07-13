@@ -20,6 +20,9 @@ public class EmailService {
     @Value("${resend.api.key:}")
     private String resendApiKey;
 
+    @Value("${resend.from.email:Fashion Store <onboarding@resend.dev>}")
+    private String resendFromEmail;
+
     public EmailService(@Autowired(required = false) JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }
@@ -143,7 +146,7 @@ public class EmailService {
             headers.set("Authorization", "Bearer " + resendApiKey);
 
             java.util.Map<String, Object> payload = new java.util.HashMap<>();
-            payload.put("from", "Fashion Store <onboarding@resend.dev>");
+            payload.put("from", resendFromEmail);
             payload.put("to", java.util.List.of(to));
             payload.put("subject", subject);
             
