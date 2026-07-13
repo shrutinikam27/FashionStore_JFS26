@@ -35,3 +35,6 @@ build/
 # Local Environment variables
 .env
 
+# Local developer dispatched emails
+/dispatched_emails/
+

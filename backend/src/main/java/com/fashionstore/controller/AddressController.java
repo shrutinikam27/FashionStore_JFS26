@@ -73,7 +73,19 @@ public class AddressController {
             throw new IllegalArgumentException("Not authorized to delete this address");
         }
 
+        boolean wasDefault = address.isDefault();
         addressRepository.delete(address);
+
+        // If the deleted address was the default, assign a new default from remaining addresses
+        if (wasDefault) {
+            List<Address> remaining = addressRepository.findByUserId(user.getId());
+            if (!remaining.isEmpty()) {
+                Address newDefault = remaining.get(0);
+                newDefault.setDefault(true);
+                addressRepository.save(newDefault);
+            }
+        }
+
         return ResponseEntity.noContent().build();
     }
 }

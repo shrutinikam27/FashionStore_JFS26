@@ -4,6 +4,8 @@ backend/*.jar
 backend/*.war
 backend/*.ear
 backend/*.class
+dispatched_emails/
+backend/dispatched_emails/
 
 # Node / Frontend ignore rules
 frontend/node_modules/

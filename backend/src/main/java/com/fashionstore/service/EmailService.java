@@ -37,6 +37,7 @@ public class EmailService {
                 message.setText(body);
                 mailSender.send(message);
                 System.out.println(">>> SUCCESS: Real email dispatched to " + to + " via SMTP");
+                saveEmailToFile(to, subject, body, null, null);
                 return;
             } catch (Exception e) {
                 System.err.println(">>> ERROR: Failed to send real email via SMTP. Reason: " + e.getMessage());
@@ -49,7 +50,7 @@ public class EmailService {
             return;
         }
 
-        printMockEmail(to, subject, body);
+        printMockEmail(to, subject, body, null, null);
     }
 
     @Async
@@ -70,6 +71,7 @@ public class EmailService {
                 
                 mailSender.send(message);
                 System.out.println(">>> SUCCESS: Real email with attachment dispatched to " + to + " via SMTP");
+                saveEmailToFile(to, subject, body, attachmentBytes, attachmentName);
                 return;
             } catch (Exception e) {
                 System.err.println(">>> ERROR: Failed to send real email with attachment via SMTP. Reason: " + e.getMessage());
@@ -82,17 +84,55 @@ public class EmailService {
             return;
         }
 
-        printMockEmail(to, subject, body + "\n[Attachment: " + attachmentName + " (" + attachmentBytes.length + " bytes)]");
+        printMockEmail(to, subject, body, attachmentBytes, attachmentName);
     }
 
-    private void printMockEmail(String to, String subject, String body) {
+    private void printMockEmail(String to, String subject, String body, byte[] attachmentBytes, String attachmentName) {
         System.out.println("==================================================");
         System.out.println("MOCK EMAIL DISPATCH (Fallback: SMTP not configured)");
         System.out.println("To: " + to);
         System.out.println("Subject: " + subject);
         System.out.println("Content:");
         System.out.println(body);
+        if (attachmentBytes != null && attachmentName != null) {
+            System.out.println("Attachment: " + attachmentName + " (" + attachmentBytes.length + " bytes)");
+        }
         System.out.println("==================================================");
+        saveEmailToFile(to, subject, body, attachmentBytes, attachmentName);
+    }
+
+    private void saveEmailToFile(String to, String subject, String body, byte[] attachmentBytes, String attachmentName) {
+        try {
+            java.nio.file.Path emailFolder = java.nio.file.Paths.get("dispatched_emails");
+            java.nio.file.Files.createDirectories(emailFolder);
+            
+            String filename = "email_" + System.currentTimeMillis() + "_" + to.replaceAll("[^a-zA-Z0-9.-]", "_") + ".txt";
+            java.nio.file.Path emailFile = emailFolder.resolve(filename);
+            
+            StringBuilder sb = new StringBuilder();
+            sb.append("==================================================\n");
+            sb.append("To: ").append(to).append("\n");
+            sb.append("Subject: ").append(subject).append("\n");
+            sb.append("Date: ").append(java.time.LocalDateTime.now()).append("\n");
+            sb.append("==================================================\n\n");
+            sb.append(body).append("\n\n");
+            
+            if (attachmentBytes != null && attachmentName != null) {
+                sb.append("==================================================\n");
+                sb.append("Attachment: ").append(attachmentName).append(" (").append(attachmentBytes.length).append(" bytes)\n");
+                sb.append("==================================================\n");
+                
+                String attachFilename = "attachment_" + System.currentTimeMillis() + "_" + attachmentName;
+                java.nio.file.Path attachFile = emailFolder.resolve(attachFilename);
+                java.nio.file.Files.write(attachFile, attachmentBytes);
+                sb.append("Saved attachment file to: ").append(attachFile.toAbsolutePath()).append("\n");
+            }
+            
+            java.nio.file.Files.writeString(emailFile, sb.toString());
+            System.out.println(">>> DEVELOPER TOOL: Dispatched email content saved to local file: " + emailFile.toAbsolutePath());
+        } catch (Exception e) {
+            System.err.println(">>> ERROR: Failed to save email to local file: " + e.getMessage());
+        }
     }
 
     private void sendEmailViaResend(String to, String subject, String body, byte[] attachmentBytes, String attachmentName) {
@@ -122,10 +162,11 @@ public class EmailService {
             org.springframework.http.ResponseEntity<String> response = restTemplate.postForEntity("https://api.resend.com/emails", entity, String.class);
             
             System.out.println(">>> SUCCESS: Email sent via Resend HTTP API. Status: " + response.getStatusCode());
+            saveEmailToFile(to, subject, body, attachmentBytes, attachmentName);
         } catch (Exception e) {
             System.err.println(">>> ERROR: Failed to send email via Resend API. Reason: " + e.getMessage());
             e.printStackTrace();
-            printMockEmail(to, subject, body);
+            printMockEmail(to, subject, body, attachmentBytes, attachmentName);
         }
     }
 }

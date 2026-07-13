@@ -94,6 +94,19 @@ const Checkout = ({ isMockMode }) => {
     }
   };
 
+  const handleDeleteAddress = async (addrId) => {
+    if (!window.confirm('Are you sure you want to delete this address?')) return;
+    try {
+      await api.delete(`/addresses/${addrId}`);
+      setAddresses(addresses.filter(a => a.id !== addrId));
+      if (String(selectedAddressId) === String(addrId)) {
+        setSelectedAddressId(null);
+      }
+    } catch (err) {
+      alert('Failed to delete address');
+    }
+  };
+
   const handlePlaceOrder = async () => {
     if (!selectedAddressId) {
       setErrorMsg('Please select or add a shipping address.');
@@ -271,22 +284,29 @@ const Checkout = ({ isMockMode }) => {
               addresses.length > 0 ? (
                 <div className="d-flex flex-column gap-3">
                   {addresses.map((addr) => (
-                    <label key={addr.id} className="d-flex gap-3 p-3 rounded border border-secondary border-opacity-10 cursor-pointer align-items-center bg-light">
-                      <input
-                        type="radio"
-                        name="shippingAddress"
-                        value={addr.id}
-                        checked={String(selectedAddressId) === String(addr.id)}
-                        onChange={() => setSelectedAddressId(addr.id)}
-                        style={{ cursor: 'pointer' }}
-                      />
-                      <div className="small">
-                        <span className="fw-bold d-block">
-                          {addr.street} {addr.isDefault && <span className="badge bg-secondary badge-premium text-dark ms-2">Default</span>}
-                        </span>
-                        <span className="text-secondary">{addr.city}, {addr.state} {addr.zipCode}, {addr.country}</span>
-                      </div>
-                    </label>
+                    <div key={addr.id} className="d-flex gap-3 p-3 rounded border border-secondary border-opacity-10 align-items-center bg-light justify-content-between">
+                      <label className="d-flex gap-3 cursor-pointer align-items-center flex-grow-1 mb-0">
+                        <input
+                          type="radio"
+                          name="shippingAddress"
+                          value={addr.id}
+                          checked={String(selectedAddressId) === String(addr.id)}
+                          onChange={() => setSelectedAddressId(addr.id)}
+                          style={{ cursor: 'pointer' }}
+                        />
+                        <div className="small">
+                          <span className="fw-bold d-block">
+                            {addr.street} {addr.isDefault && <span className="badge bg-secondary badge-premium text-dark ms-2">Default</span>}
+                          </span>
+                          <span className="text-secondary">{addr.city}, {addr.state} {addr.zipCode}, {addr.country}</span>
+                        </div>
+                      </label>
+                      <button type="button" onClick={() => handleDeleteAddress(addr.id)}
+                        style={{ background: 'none', border: 'none', color: 'var(--danger)', cursor: 'pointer', padding: '4px', flexShrink: 0 }}
+                      >
+                        <i className="bi bi-trash fs-5"></i>
+                      </button>
+                    </div>
                   ))}
                 </div>
               ) : (
