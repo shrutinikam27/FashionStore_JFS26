@@ -128,6 +128,19 @@ public class AuthService {
             cart.setUser(saved);
             cartRepository.save(cart);
 
+            // Dispatch welcome email
+            try {
+                emailService.sendEmail(
+                        email,
+                        "Welcome to Fashion Store!",
+                        "Hello " + (firstName != null ? firstName : "Google User") + ",\n\n" +
+                        "Thank you for registering at Fashion Store! Your account is active and you can start shopping now.\n\n" +
+                        "Best regards,\nFashion Store Team"
+                );
+            } catch (Exception e) {
+                System.err.println("Failed to send welcome email for SSO user: " + e.getMessage());
+            }
+
             return saved;
         });
 
