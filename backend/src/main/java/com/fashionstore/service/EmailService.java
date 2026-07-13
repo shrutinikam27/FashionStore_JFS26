@@ -29,12 +29,13 @@ public class EmailService {
 
     @Async
     public void sendEmail(String to, String subject, String body) {
-        boolean hasSmtp = mailSender != null && fromEmail != null && !fromEmail.trim().isEmpty() && !fromEmail.contains("YOUR_GMAIL");
+        boolean hasSmtp = mailSender != null && (fromEmail == null || !fromEmail.contains("YOUR_GMAIL"));
         
         if (hasSmtp) {
             try {
                 SimpleMailMessage message = new SimpleMailMessage();
-                message.setFrom(fromEmail);
+                String sender = (fromEmail != null && !fromEmail.trim().isEmpty()) ? fromEmail : "info@fashionstore.com";
+                message.setFrom(sender);
                 message.setTo(to);
                 message.setSubject(subject);
                 message.setText(body);
@@ -58,13 +59,14 @@ public class EmailService {
 
     @Async
     public void sendEmailWithAttachment(String to, String subject, String body, byte[] attachmentBytes, String attachmentName) {
-        boolean hasSmtp = mailSender != null && fromEmail != null && !fromEmail.trim().isEmpty() && !fromEmail.contains("YOUR_GMAIL");
+        boolean hasSmtp = mailSender != null && (fromEmail == null || !fromEmail.contains("YOUR_GMAIL"));
 
         if (hasSmtp) {
             try {
                 jakarta.mail.internet.MimeMessage message = mailSender.createMimeMessage();
                 org.springframework.mail.javamail.MimeMessageHelper helper = new org.springframework.mail.javamail.MimeMessageHelper(message, true);
-                helper.setFrom(fromEmail, "Fashion Store");
+                String sender = (fromEmail != null && !fromEmail.trim().isEmpty()) ? fromEmail : "info@fashionstore.com";
+                helper.setFrom(sender, "Fashion Store");
                 helper.setTo(to);
                 helper.setSubject(subject);
                 helper.setText(body);
